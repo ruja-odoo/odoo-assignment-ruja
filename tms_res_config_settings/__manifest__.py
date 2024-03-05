@@ -1,19 +1,16 @@
 {
-    "name": "Transport Management System",
+    "name": "Transport Management System Settings Inherited",
     "version": "1.0",
     "category": "Inventory/Transport Management System",
-    "summary": "A module for managing transport ",
+    "summary": "A module for managing transport settings ",
     "description": """
         This module allows users to manage transport based on picking batches
         This module is developed by ruja-odoo.
     """,
     "author": "ruja-odoo",
-    "depends": ["base", "fleet", "stock_picking_batch"],
+    "depends": ["stock"],
     "data": [
-            "security/ir.model.access.csv",
-            "views/model_category_view.xml",
-            "views/tms_picking_batch.xml",
-            "views/tmsVol_views.xml",
+        "views/resConfigSettingimportTms.xml"
     ],
     "demo": [
     ],

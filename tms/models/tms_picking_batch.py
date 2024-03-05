@@ -1,4 +1,5 @@
 from odoo import models,fields,api
+from dateutil.relativedelta import relativedelta
 
 class tmsStockPickingBatch(models.Model):
     _inherit = "stock.picking.batch"
@@ -9,6 +10,21 @@ class tmsStockPickingBatch(models.Model):
     volume=fields.Float(compute="_compute_volume",store=True)
     total_transfers=fields.Integer(compute="_compute_transfers",store=True, string="Transfers")
     total_lines=fields.Integer(compute="_compute_lines",store=True)
+    dock =fields.Many2one("tms.dock", string="Dock")
+    end_date=fields.Datetime(compute="_compute_end_date",store=True)
+    @api.depends("weight","volume")
+    def _compute_display_name(self):
+        super()._compute_display_name()
+        for record in self:
+            name = record.name
+            record.display_name=name+ ": " + str(record.weight) + "kg, " + str(record.volume) + "m\u00b3 "
+    @api.depends("scheduled_date")
+    def _compute_end_date(self):
+        for record in self:
+            record.end_date=record.scheduled_date.replace(hour=18, minute=29, second=59, microsecond=0)
+            record.scheduled_date=record.scheduled_date - relativedelta(days=1)
+            record.scheduled_date=record.scheduled_date.replace(hour=18, minute=30, second=59, microsecond=0)
+            print(record.end_date)
 
     @api.depends("picking_ids")
     def _compute_transfers(self):

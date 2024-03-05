@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='scheduled_date']" position="after">
                 <field name="vehicle"/>
+                <field name="dock"/>
                 <field name="vehicle_category" invisible="False" />
                 <field name="weight" widget="progressbar" invisible="not vehicle_category"/>
                 <field name="volume" widget="progressbar" invisible="not vehicle_category"/>
@@ -23,11 +24,33 @@
                 <field name="weight" operator="+"/>
                 <field name="vehicle_category"/>
             </graph>
-
         </field>
 
     </record>
+    <record id="tms_batch_view_gantt" model="ir.ui.view">
+        <field name="name">tms.batch.view.gantt</field>
+        <field name="model">stock.picking.batch</field>
+        <field name="priority">10</field>
+        <field name="arch" type="xml">
+            <gantt date_start="scheduled_date"
+                date_stop="end_date"
+                js_class="hr_gantt"
+                default_scale="week"
+                scales="day,week,month,year"
+                string="Schedule"
+                default_group_by="dock,vehicle,user_id"
+                thumbnails="{'user_id': 'image_1920'}"
+                pill_label="True"
+                color="dock"
+                decoration-info="state in ['draft', 'done']"
+                >
+                <field name="state" invisible="1"/>
+                <field name="weight" string="weight" />
+            </gantt>
+        </field>
+    </record>
+
     <record id="stock_picking_batch.stock_picking_batch_action" model="ir.actions.act_window">
-        <field name="view_mode">tree,kanban,form,graph</field>
+        <field name="view_mode">tree,kanban,form,graph,gantt</field>
     </record>
 </odoo>
